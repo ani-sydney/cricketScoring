@@ -14,6 +14,7 @@ struct LiveScoringView: View {
     @State private var showOpeners = false
     @State private var editingEvent: BallEventData?
     @State private var confirmEndInnings = false
+    @State private var showScorecard = false
 
     private var innings: Innings? {
         if let id = selectedInningsID, let f = match.inningsList.first(where: { $0.id == id }) { return f }
@@ -48,6 +49,12 @@ struct LiveScoringView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                Button { showScorecard = true } label: {
+                    Label("Scorecard", systemImage: "list.bullet.rectangle")
+                }
+                .accessibilityLabel("Show scorecard")
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button { undoLast() } label: { Label("Undo Last Ball", systemImage: "arrow.uturn.backward") }
                         .disabled(events.isEmpty)
@@ -65,6 +72,19 @@ struct LiveScoringView: View {
             Button("Cancel", role: .cancel) {}
             Button("End Innings", role: .destructive) { endInnings() }
         } message: { Text("The innings will be marked complete. You can still edit balls afterwards from the scorecard.") }
+        .sheet(isPresented: $showScorecard) {
+            NavigationStack {
+                ScorecardView(match: match)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Done") { showScorecard = false }
+                                .fontWeight(.semibold)
+                        }
+                    }
+            }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
         .sheet(isPresented: $showExtras) { extrasSheet }
         .sheet(isPresented: $showWicket) { wicketSheet }
         .sheet(isPresented: $showBowlerPicker) { bowlerSheet }
