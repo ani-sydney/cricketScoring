@@ -21,6 +21,7 @@
 		S2000001 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = S1000001 /* SplashView.swift */; };
 		S2000002 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = S1000002 /* RootView.swift */; };
 		S2000003 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = S1000003 /* LaunchScreen.storyboard */; };
+		P2000001 /* ScorebookPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = P1000001 /* ScorebookPDF.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		S1000001 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		S1000002 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		S1000003 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		P1000001 /* ScorebookPDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorebookPDF.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				B1000006 /* LiveScoringView.swift */,
 				B1000007 /* ScorecardView.swift */,
 				S1000001 /* SplashView.swift */,
+				P1000001 /* ScorebookPDF.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				A1000007 /* ScorecardView.swift in Sources */,
 				S2000001 /* SplashView.swift in Sources */,
 				S2000002 /* RootView.swift in Sources */,
+				P2000001 /* ScorebookPDF.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

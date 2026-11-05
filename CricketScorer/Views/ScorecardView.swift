@@ -3,6 +3,10 @@ import SwiftData
 
 struct ScorecardView: View {
     @Bindable var match: Match
+    @State private var exportDay = 1
+    @State private var isFinalDay = false
+    @State private var shareItems: [Any] = []
+    @State private var showShare = false
     private var names: [UUID: String] { Dictionary(uniqueKeysWithValues: match.players.map { ($0.id, $0.name.isEmpty ? "Player \($0.battingOrder + 1)" : $0.name) }) }
 
     var body: some View {
@@ -10,15 +14,51 @@ struct ScorecardView: View {
             ForEach(match.inningsList.sorted { $0.inningsNumber < $1.inningsNumber }) { inn in
                 inningsSection(inn)
             }
-            Section {
-                ShareLink(item: exportText) {
-                    Label("Share Scorecard", systemImage: "square.and.arrow.up")
+            Section("Export — SCA Score Book Format") {
+                Picker("Scorebook day", selection: $exportDay) {
+                    ForEach(1...4, id: \.self) { Text("Day \($0)").tag($0) }
                 }
-                Text("Stored only on this device (SwiftData). Share sends a text scorecard wherever you choose.")
+                Toggle("Final day / end of match", isOn: $isFinalDay)
+                Button {
+                    prepareScorebookShare()
+                } label: {
+                    Label("Share Scorebook PDF", systemImage: "doc.richtext")
+                }
+                ShareLink(item: exportText) {
+                    Label("Share Text Scorecard", systemImage: "square.and.arrow.up")
+                }
+                Text("One SCA-style sheet per innings (both teams, all innings played so far) plus a match summary page. For two-day games, export at stumps each day: pick that day above and share. It always uses the latest score.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            Section {
+                Text("Stored only on this device (SwiftData). Nothing is sent anywhere unless you share it.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
         .navigationTitle("Scorecard")
+        .sheet(isPresented: $showShare) {
+            ActivityShareSheet(items: shareItems)
+        }
+        .onAppear {
+            if match.status == .completed { isFinalDay = true }
+        }
+    }
+
+    /// Writes the PDF to a temp file (so Messages/Mail show a proper filename)
+    /// and presents the standard iOS share sheet.
+    private func prepareScorebookShare() {
+        let data = ScorebookExporter.makePDF(match: match, day: exportDay, isFinalDay: isFinalDay)
+        let safeA = match.teamAName.replacingOccurrences(of: " ", with: "-")
+        let safeB = match.teamBName.replacingOccurrences(of: " ", with: "-")
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("Scorebook-\(safeA)-v-\(safeB)-Day\(exportDay).pdf")
+        do {
+            try data.write(to: url, options: .atomic)
+            shareItems = [url]
+        } catch {
+            shareItems = [data]
+        }
+        showShare = true
     }
 
     @ViewBuilder private func inningsSection(_ inn: Innings) -> some View {
