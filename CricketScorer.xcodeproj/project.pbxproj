@@ -22,6 +22,7 @@
 		S2000002 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = S1000002 /* RootView.swift */; };
 		S2000003 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = S1000003 /* LaunchScreen.storyboard */; };
 		P2000001 /* ScorebookPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = P1000001 /* ScorebookPDF.swift */; };
+		U1000001 /* DemoFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = U2000001 /* DemoFlowUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,10 +41,19 @@
 		S1000002 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		S1000003 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		P1000001 /* ScorebookPDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorebookPDF.swift; sourceTree = "<group>"; };
+		U2000001 /* DemoFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFlowUITests.swift; sourceTree = "<group>"; };
+		U2000002 /* CricketScorerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CricketScorerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C1000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		U4000002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -65,6 +75,7 @@
 			children = (
 				D1000002 /* CricketScorer */,
 				T3000001 /* CricketScorerTests */,
+				U3000001 /* CricketScorerUITests */,
 				D1000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +99,7 @@
 			children = (
 				B1000009 /* CricketScorer.app */,
 				T2000002 /* CricketScorerTests.xctest */,
+				U2000002 /* CricketScorerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,6 +141,14 @@
 			path = CricketScorerTests;
 			sourceTree = "<group>";
 		};
+		U3000001 /* CricketScorerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				U2000001 /* DemoFlowUITests.swift */,
+			);
+			path = CricketScorerUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -167,6 +187,24 @@
 			productReference = T2000002 /* CricketScorerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		U5000001 /* CricketScorerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = U7000001 /* Build configuration list for PBXNativeTarget "CricketScorerUITests" */;
+			buildPhases = (
+				U4000001 /* Sources */,
+				U4000002 /* Frameworks */,
+				U4000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				U6000001 /* PBXTargetDependency */,
+			);
+			name = CricketScorerUITests;
+			productName = CricketScorerUITests;
+			productReference = U2000002 /* CricketScorerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -197,6 +235,7 @@
 			targets = (
 				E1000001 /* CricketScorer */,
 				T5000001 /* CricketScorerTests */,
+				U5000001 /* CricketScorerUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -212,6 +251,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		T4000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		U4000003 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -248,6 +294,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		U4000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				U1000001 /* DemoFlowUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXContainerItemProxy section */
@@ -265,6 +319,24 @@
 			isa = PBXTargetDependency;
 			target = E1000001 /* CricketScorer */;
 			targetProxy = T6000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		U6000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E1000001;
+			remoteInfo = CricketScorer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		U6000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E1000001 /* CricketScorer */;
+			targetProxy = U6000002 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -365,6 +437,38 @@
 			};
 			name = Release;
 		};
+		U7000002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.cricketscorer.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CricketScorer;
+			};
+			name = Debug;
+		};
+		U7000003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.cricketscorer.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CricketScorer;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -391,6 +495,15 @@
 			buildConfigurations = (
 				T7000002 /* Debug */,
 				T7000003 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		U7000001 /* Build configuration list for PBXNativeTarget "CricketScorerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				U7000002 /* Debug */,
+				U7000003 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
