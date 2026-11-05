@@ -20,17 +20,45 @@ struct MatchListView: View {
                     }
                 } else {
                     List {
+                        Section {
+                            HStack(spacing: 13) {
+                                Image(systemName: "sportscourt.fill")
+                                    .font(.system(size: 30))
+                                    .foregroundStyle(CricketTheme.stumpGold)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Match Day").font(.headline).foregroundStyle(.white)
+                                    Text("Score ball-by-ball. Saved on this device only.")
+                                        .font(.caption).foregroundStyle(.white.opacity(0.78))
+                                }
+                                Spacer()
+                                Image(systemName: "trophy.fill")
+                                    .foregroundStyle(.white.opacity(0.85))
+                            }
+                            .padding(.vertical, 5)
+                            .listRowBackground(CricketTheme.pitchGreen)
+                        }
                         ForEach(matches) { match in
                             NavigationLink(value: match) {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(match.title.isEmpty
-                                         ? "\(match.teamAName) v \(match.teamBName)" : match.title)
-                                        .font(.headline)
-                                    Text("\(match.teamAName) v \(match.teamBName) • \(match.oversPerInnings) overs • \(match.status.rawValue.capitalized)")
-                                        .font(.caption).foregroundStyle(.secondary)
-                                    Text(match.matchDate, style: .date)
+                                VStack(alignment: .leading, spacing: 5) {
+                                    HStack(alignment: .firstTextBaseline) {
+                                        Text(match.title.isEmpty
+                                             ? "\(match.teamAName) v \(match.teamBName)" : match.title)
+                                            .font(.headline).lineLimit(2)
+                                        Spacer()
+                                        Text(match.status.rawValue.capitalized)
+                                            .font(.caption2.weight(.bold))
+                                            .padding(.horizontal, 7).padding(.vertical, 3)
+                                            .background(statusColor(match.status).opacity(0.16), in: Capsule())
+                                            .foregroundStyle(statusColor(match.status))
+                                    }
+                                    Label("\(match.teamAName) v \(match.teamBName) • \(match.oversPerInnings) overs",
+                                          systemImage: "person.3.fill")
+                                        .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                                    Label(match.matchDate.formatted(date: .abbreviated, time: .omitted),
+                                          systemImage: "calendar")
                                         .font(.caption2).foregroundStyle(.secondary)
                                 }
+                                .padding(.vertical, 3)
                             }
                         }
                         .onDelete { offsets in
@@ -41,6 +69,7 @@ struct MatchListView: View {
                 }
             }
             .navigationTitle("Cricket Scorer")
+            .tint(CricketTheme.pitchGreen)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button { showingCreate = true } label: { Label("New Match", systemImage: "plus") }
@@ -50,6 +79,15 @@ struct MatchListView: View {
                 MatchHubView(match: match)
             }
             .sheet(isPresented: $showingCreate) { MatchSetupView() }
+        }
+    }
+
+    private func statusColor(_ status: MatchStatus) -> Color {
+        switch status {
+        case .setup: return .orange
+        case .live: return CricketTheme.ballRed
+        case .inningsBreak: return .blue
+        case .completed: return CricketTheme.outfieldGreen
         }
     }
 }

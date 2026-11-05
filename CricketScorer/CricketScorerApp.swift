@@ -5,7 +5,7 @@ import SwiftData
 struct CricketScorerApp: App {
     var body: some Scene {
         WindowGroup {
-            MatchListView()
+            RootView()
         }
         .modelContainer(for: [Match.self, Player.self, Innings.self])
     }

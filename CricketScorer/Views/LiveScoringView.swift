@@ -122,16 +122,31 @@ struct LiveScoringView: View {
     }
 
     private var scoreHeader: some View {
-        VStack(spacing: 2) {
-            Text(match.teamName(innings?.battingSide ?? .a)).font(.headline)
-            Text("\(state.totalRuns)/\(state.wickets)").font(.system(size: 44, weight: .bold, design: .rounded))
-            Text("Overs \(state.oversText) / \(match.oversPerInnings)  •  CRR \(runRate, specifier: "%.2f")\(targetText)")
-                .font(.subheadline).foregroundStyle(.secondary)
-            if let inn = innings, inn.inningsNumber > 1, let target = targetRuns {
-                Text("Target \(target)").font(.caption).foregroundStyle(.secondary)
+        VStack(spacing: 3) {
+            HStack {
+                Image(systemName: "sportscourt.fill").foregroundStyle(CricketTheme.stumpGold)
+                Text(match.teamName(innings?.battingSide ?? TeamSide.a))
+                    .font(.headline).foregroundStyle(.white).lineLimit(1)
+                Spacer()
+                if state.isComplete {
+                    Label("Closed", systemImage: "checkmark.seal.fill")
+                        .font(.caption.weight(.bold)).foregroundStyle(.white.opacity(0.85))
+                } else {
+                    Label("Live", systemImage: "record.circle.fill")
+                        .font(.caption.weight(.bold)).foregroundStyle(.white.opacity(0.9))
+                }
             }
-        }.frame(maxWidth: .infinity).padding()
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+            Text("\(state.totalRuns)/\(state.wickets)")
+                .font(.system(size: 47, weight: .heavy, design: .rounded))
+                .foregroundStyle(.white).monospacedDigit()
+            Text("Overs \(state.oversText) / \(match.oversPerInnings)  •  CRR \(runRate, specifier: "%.2f")\(targetText)")
+                .font(.subheadline.weight(.medium)).foregroundStyle(.white.opacity(0.8))
+            if let inn = innings, inn.inningsNumber > 1, let target = targetRuns {
+                Text("Target \(target)").font(.caption).foregroundStyle(.white.opacity(0.75))
+            }
+        }
+        .frame(maxWidth: .infinity).padding()
+        .background(CricketTheme.pitchGreen, in: RoundedRectangle(cornerRadius: 16))
     }
     private var runRate: Double { state.legalBalls > 0 ? Double(state.totalRuns) / (Double(state.legalBalls) / Double(match.ballsPerOver)) : 0 }
     private var targetRuns: Int? {
@@ -408,7 +423,7 @@ struct LiveScoringView: View {
 }
 
 struct ScorePadButtonStyle: ButtonStyle {
-    var tint: Color = .accentColor
+    var tint: Color = CricketTheme.pitchGreen
     func makeBody(configuration: Configuration) -> some View {
         configuration.label.font(.title3.bold()).frame(maxWidth: .infinity).padding(.vertical, 14)
             .background(tint.opacity(configuration.isPressed ? 0.35 : 0.16), in: RoundedRectangle(cornerRadius: 12))
