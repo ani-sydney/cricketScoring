@@ -130,6 +130,23 @@ final class ScoringEngineTests: XCTestCase {
         XCTAssertEqual(state.wickets, 0)
     }
 
+    // MARK: - Duplicate player names (blocking policy)
+
+    func testNormalizedNameIgnoresCaseAndSpacing() {
+        XCTAssertEqual(normalizedPlayerName("  Sam   Patel "), "sam patel")
+        XCTAssertEqual(normalizedPlayerName("SAM PATEL"), "sam patel")
+    }
+
+    func testDuplicateDetectionIgnoresCaseAndSpacing() {
+        XCTAssertTrue(isDuplicatePlayerName(" sam  patel ", among: ["Sam Patel", "Jo Lee"]))
+        XCTAssertFalse(isDuplicatePlayerName("Sam Patil", among: ["Sam Patel"]))
+    }
+
+    func testEmptyNamesAreNeverDuplicates() {
+        XCTAssertFalse(isDuplicatePlayerName("", among: ["", ""]))
+        XCTAssertFalse(isDuplicatePlayerName("   ", among: ["Sam Patel"]))
+    }
+
     func testBowlerFiguresChargeWidesButNotByes() {
         let state = replay([
             ball(seq: 0, extra: ExtraKind.wide),

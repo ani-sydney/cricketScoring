@@ -121,8 +121,12 @@ struct PlayerListEditor: View {
     @Bindable var match: Match
     let side: TeamSide
     @State private var newName = ""
+    @State private var duplicateWarning: String?
 
     private var players: [Player] { match.players(for: side) }
+    private var newNameIsDuplicate: Bool {
+        match.isNameTaken(newName, in: side)
+    }
 
     var body: some View {
         List {
@@ -131,9 +135,11 @@ struct PlayerListEditor: View {
                     HStack {
                         Text("\(player.battingOrder + 1).").foregroundStyle(.secondary)
                             .frame(width: 28, alignment: .trailing)
-                        TextField("Player name", text: Binding(
-                            get: { player.name },
-                            set: { player.name = $0; try? context.save() }))
+                        PlayerNameField(player: player) { candidate in
+                            match.isNameTaken(candidate, in: side, excluding: player.id)
+                        } onRejected: { candidate in
+                            duplicateWarning = "\"\(candidate)\" is already used in \(match.teamName(side)). Two players in one team cannot share a name — please use a different name or add a middle initial."
+                        }
                         if player.isCaptain { Text("©").foregroundStyle(.secondary) }
                         if player.isWicketKeeper { Text("†").foregroundStyle(.secondary) }
                     }
@@ -159,11 +165,19 @@ struct PlayerListEditor: View {
                 HStack {
                     TextField("Add player name", text: $newName)
                     Button("Add") {
-                        let p = Player(name: newName.trimmingCharacters(in: .whitespaces),
-                                       side: side, battingOrder: players.count)
+                        let cleaned = newName.trimmingCharacters(in: .whitespaces)
+                        guard !match.isNameTaken(cleaned, in: side) else {
+                            duplicateWarning = "\"\(cleaned)\" is already used in \(match.teamName(side)). Two players in one team cannot share a name."
+                            return
+                        }
+                        let p = Player(name: cleaned, side: side, battingOrder: players.count)
                         p.match = match; match.players.append(p); context.insert(p)
                         newName = ""; try? context.save()
-                    }.disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }.disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty || newNameIsDuplicate)
+                }
+                if newNameIsDuplicate {
+                    Text("Name already used in this team. Two players in one team cannot share a name.")
+                        .font(.caption).foregroundStyle(.red)
                 }
                 Text("Tip: paste a squad list one name per line in Notes, then type names here. Swipe a row to mark © captain or † keeper. Drag to set batting order.")
                     .font(.caption).foregroundStyle(.secondary)
@@ -171,8 +185,49 @@ struct PlayerListEditor: View {
         }
         .navigationTitle(match.teamName(side))
         .toolbar { EditButton() }
+        .alert("Name Already Used", isPresented: Binding(
+            get: { duplicateWarning != nil },
+            set: { if !$0 { duplicateWarning = nil } })) {
+            Button("OK", role: .cancel) { duplicateWarning = nil }
+        } message: {
+            Text(duplicateWarning ?? "")
+        }
     }
     private func renumber() {
         for (i, p) in players.enumerated() { p.battingOrder = i }
+    }
+}
+
+/// Name editor that only commits non-duplicate names. A duplicate is
+/// rejected on Return / focus loss and the saved name is restored.
+struct PlayerNameField: View {
+    @Environment(\.modelContext) private var context
+    @Bindable var player: Player
+    let isDuplicate: (String) -> Bool
+    let onRejected: (String) -> Void
+    @State private var draft = ""
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        TextField("Player name", text: $draft)
+            .focused($focused)
+            .onAppear { draft = player.name }
+            .onSubmit { commit() }
+            .onChange(of: focused) { _, isFocused in
+                if !isFocused { commit() }
+            }
+    }
+
+    private func commit() {
+        let cleaned = draft.trimmingCharacters(in: .whitespaces)
+        guard cleaned != player.name else { draft = player.name; return }
+        guard !isDuplicate(cleaned) else {
+            onRejected(cleaned)
+            draft = player.name
+            return
+        }
+        player.name = cleaned
+        draft = cleaned
+        try? context.save()
     }
 }

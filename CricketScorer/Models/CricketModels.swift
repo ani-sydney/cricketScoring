@@ -100,6 +100,20 @@ struct BallEventData: Codable, Identifiable, Equatable {
     }
 }
 
+/// Canonical form for comparing player names: trimmed, single-spaced, lowercased.
+/// "  Sam   Patel " and "sam patel" are the same name.
+func normalizedPlayerName(_ name: String) -> String {
+    name.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ").lowercased()
+}
+
+/// True when `candidate` already exists in `existingNames` (case/spacing-insensitive).
+/// Empty names never count as duplicates (unused squad slots stay empty).
+func isDuplicatePlayerName(_ candidate: String, among existingNames: [String]) -> Bool {
+    let target = normalizedPlayerName(candidate)
+    guard !target.isEmpty else { return false }
+    return existingNames.contains { normalizedPlayerName($0) == target }
+}
+
 @Model final class Match {
     var id: UUID
     var title: String
@@ -148,6 +162,12 @@ struct BallEventData: Codable, Identifiable, Equatable {
     var status: MatchStatus {
         get { MatchStatus(rawValue: statusRaw) ?? .setup }
         set { statusRaw = newValue.rawValue }
+    }
+    /// Blocking rule (chosen policy): a name may be used by only one player
+    /// per team. Same name in the opposing team is allowed.
+    func isNameTaken(_ name: String, in side: TeamSide, excluding playerID: UUID? = nil) -> Bool {
+        let others = players.filter { $0.side == side && $0.id != playerID }.map(\.name)
+        return isDuplicatePlayerName(name, among: others)
     }
     func teamName(_ side: TeamSide) -> String { side == .a ? teamAName : teamBName }
     func players(for side: TeamSide) -> [Player] {
